@@ -1,0 +1,224 @@
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>備蓄診断ツール</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      line-height: 1.8;
+    }
+
+    .step {
+      display: none;
+    }
+
+    .active {
+      display: block;
+    }
+
+    button {
+      padding: 10px;
+      margin-top: 10px;
+      margin-right: 8px;
+      cursor: pointer;
+    }
+
+    .result-box {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 12px;
+      background: #fafafa;
+    }
+
+    .link-box {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #ddd;
+    }
+
+    .link-button {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 12px 18px;
+      background-color: #e60033;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>あなたの防災備蓄チェック</h1>
+
+<!-- STEP1 -->
+<div id="step1" class="step active">
+  <h2>① 世帯人数を入力</h2>
+  <input type="number" id="people" value="1" min="1" max="9">
+  <br>
+  <button onclick="nextStep(2)">次へ</button>
+</div>
+
+<!-- STEP2 -->
+<div id="step2" class="step">
+  <h2>② 性別・年代</h2>
+  <div id="persons"></div>
+  <button onclick="nextStep(1)">戻る</button>
+  <button onclick="nextStep(3)">次へ</button>
+</div>
+
+<!-- STEP3 -->
+<div id="step3" class="step">
+  <h2>③ 備えチェック</h2>
+
+  <p>家具転倒対策はしていますか？</p>
+  <select id="furniture">
+    <option value="yes">している</option>
+    <option value="no">していない</option>
+  </select>
+
+  <p>水・食料は？</p>
+  <select id="foodWater">
+    <option value="full">3日分以上</option>
+    <option value="partial">1〜2日分</option>
+    <option value="none">なし</option>
+  </select>
+
+  <p>簡易トイレは？</p>
+  <select id="toilet">
+    <option value="full">3日分以上</option>
+    <option value="partial">1〜2日分</option>
+    <option value="none">なし</option>
+  </select>
+
+  <p>家族との連絡手段を決めていますか？</p>
+  <select id="contact">
+    <option value="yes">決めている</option>
+    <option value="no">決めていない</option>
+  </select>
+
+  <br>
+  <button onclick="nextStep(2)">戻る</button>
+  <button onclick="nextStep(4)">結果</button>
+</div>
+
+<!-- STEP4 -->
+<div id="step4" class="step">
+  <h2>④ 診断結果</h2>
+  <div id="result"></div>
+  <button onclick="nextStep(3)">戻る</button>
+</div>
+
+<script>
+let personsData = [];
+
+function savePersons() {
+  const count = Number(document.getElementById("people").value);
+  const newData = [];
+
+  for (let i = 0; i < count; i++) {
+    const g = document.getElementById("gender" + i)?.value ?? "male";
+    const a = document.getElementById("age" + i)?.value ?? "adult";
+    newData.push({ gender: g, age: a });
+  }
+  personsData = newData;
+}
+
+function createPersons() {
+  const count = Number(document.getElementById("people").value);
+  const div = document.getElementById("persons");
+
+  div.innerHTML = "";
+
+  for (let i = 0; i < count; i++) {
+    div.innerHTML += `
+      <p>${i + 1}人目</p>
+      性別：
+      <select id="gender${i}">
+        <option value="male">男性</option>
+        <option value="female">女性</option>
+      </select>
+      年代：
+      <select id="age${i}">
+        <option value="baby">乳幼児</option>
+        <option value="child">子供</option>
+        <option value="adult">成人</option>
+        <option value="elder">高齢者</option>
+      </select>
+      <hr>
+    `;
+  }
+}
+
+function nextStep(step) {
+  document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
+  document.getElementById("step" + step).classList.add("active");
+
+  if (step === 2) createPersons();
+  if (step === 4) calc();
+}
+
+function calc() {
+  const count = Number(document.getElementById("people").value);
+
+  let score = 0;
+  let maxScore = 6;
+  let list = [];
+  let totalWaterL = count * 9;
+  let totalFoodDays = count * 3;
+
+  savePersons();
+
+  personsData.forEach(p => {
+    if (p.age === "baby") list.push("粉ミルク・おむつ");
+    if (p.age === "elder") list.push("常備薬");
+    if (p.gender === "female") list.push("生理用品");
+  });
+
+  if (document.getElementById("furniture").value === "yes") score++; else list.push("家具固定");
+  if (document.getElementById("foodWater").value === "full") score += 2;
+  else list.push("水・食料");
+  if (document.getElementById("toilet").value === "full") score += 2;
+  else list.push("簡易トイレ");
+  if (document.getElementById("contact").value === "yes") score++;
+  else list.push("連絡方法確認");
+
+  list = [...new Set(list)];
+
+  let level = score <= 2 ? "危険" : score <= 4 ? "要改善" : "安心";
+
+  document.getElementById("result").innerHTML = `
+    <div class="result-box">
+      <strong>結果：${level}</strong><br><br>
+
+      水：${totalWaterL}L<br>
+      食料：${totalFoodDays}日分<br><br>
+
+      不足：<br>
+      ${list.join("<br>")}<br><br>
+
+      <div class="link-box">
+        <strong>備蓄品の確認はこちら</strong><br>
+
+        <!-- PDFリンク -->
+        <a class="link-button" href="pdf/stock.pdf" target="_blank">
+          備蓄チェックシートを見る
+        </a>
+
+        <p>※開けない場合は下記から</p>
+        <a href="pdf/stock.pdf" target="_blank">
+          PDFを直接開く
+        </a>
+      </div>
+    </div>
+  `;
+}
+</script>
+
+</body>
+</html>
+
