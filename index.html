@@ -131,14 +131,14 @@ button.next {
     <option value="no">していない</option>
   </select>
 
-  <p>水・食料　必要目安　水:1人3L×3～7日　食料:1人3食×3~7日</p>
+  <p>水・食料</p>
   <select id="foodWater">
     <option value="full">3日分以上</option>
     <option value="partial">1〜2日分</option>
     <option value="none">なし</option>
   </select>
 
-  <p>簡易トイレ　必要目安：1人5回×3~7日</p>
+  <p>簡易トイレ</p>
   <select id="toilet">
     <option value="full">3日分以上</option>
     <option value="partial">1〜2日分</option>
@@ -243,7 +243,10 @@ function calc() {
     <div class="result-box ${cls}">
       <h3>あなたの備蓄レベル：${level}</h3>
       <p>${msg}</p>
-      
+
+      <strong>必要量（目安）</strong><br>
+      水：${count*9}L / 食料：${count*9}食<br><br>
+
       <strong>不足しているもの</strong><br>
       ${detail.join("<br>")}<br><br>
 
