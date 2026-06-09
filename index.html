@@ -1,66 +1,104 @@
+
+<!DOCTYPE html>
+<html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>備蓄診断ツール</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-      line-height: 1.8;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>備蓄診断ツール</title>
 
-    .step {
-      display: none;
-    }
+<style>
+body {
+  font-family: sans-serif;
+  padding: 20px;
+  line-height: 1.8;
+}
 
-    .active {
-      display: block;
-    }
+/* 見出し */
+h1 {
+  margin-bottom: 10px;
+}
 
-    button {
-      padding: 10px;
-      margin-top: 10px;
-      margin-right: 8px;
-      cursor: pointer;
-    }
+/* ステップ制御 */
+.step {
+  display: none;
+}
+.active {
+  display: block;
+}
 
-    .result-box {
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 16px;
-      margin-top: 12px;
-      background: #fafafa;
-    }
+/* 入力 */
+select, input {
+  margin-top: 5px;
+  padding: 8px;
+  font-size: 16px;
+}
 
-    .link-box {
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid #ddd;
-    }
+/* ボタン（重要） */
+button {
+  padding: 14px 18px;
+  margin-top: 12px;
+  margin-right: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 6px;
+  border: none;
+}
 
-    .link-button {
-      display: inline-block;
-      margin-top: 8px;
-      padding: 12px 18px;
-      background-color: #e60033;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: bold;
-    }
-  </style>
+/* 進むボタンを赤に */
+button.next {
+  background-color: #e60033;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* 結果 */
+.result-box {
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 12px;
+  background: #fafafa;
+}
+
+/* レベル色 */
+.level-danger {
+  border: 2px solid red;
+}
+.level-warning {
+  border: 2px solid orange;
+}
+.level-safe {
+  border: 2px solid green;
+}
+
+.link-box {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #ddd;
+}
+
+.link-button {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 12px 18px;
+  background-color: #e60033;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: bold;
+}
+</style>
 </head>
 
 <body>
 
-<h1>あなたの防災備蓄チェック</h1>
+<h1>30秒で分かる！備蓄レベル診断</h1>
+<p>質問に答えるだけで、不足している備蓄品がすぐ分かります</p>
 
 <!-- STEP1 -->
 <div id="step1" class="step active">
-  <h2>① 世帯人数を入力</h2>
-  <input type="number" id="people" value="1" min="1" max="9">
-  <br>
-  <button onclick="nextStep(2)">次へ</button>
+  <h2>① 世帯人数</h2>
+  <input type="number" id="people" value="1" min="1" max="9"><br>
+  <button class="next" onclick="nextStep(2)">次へ</button>
 </div>
 
 <!-- STEP2 -->
@@ -68,34 +106,34 @@
   <h2>② 性別・年代</h2>
   <div id="persons"></div>
   <button onclick="nextStep(1)">戻る</button>
-  <button onclick="nextStep(3)">次へ</button>
+  <button class="next" onclick="nextStep(3)">次へ</button>
 </div>
 
 <!-- STEP3 -->
 <div id="step3" class="step">
   <h2>③ 備えチェック</h2>
 
-  <p>家具転倒対策はしていますか？</p>
+  <p>家具転倒対策</p>
   <select id="furniture">
     <option value="yes">している</option>
     <option value="no">していない</option>
   </select>
 
-  <p>水・食料は？</p>
+  <p>水・食料</p>
   <select id="foodWater">
     <option value="full">3日分以上</option>
     <option value="partial">1〜2日分</option>
     <option value="none">なし</option>
   </select>
 
-  <p>簡易トイレは？</p>
+  <p>簡易トイレ</p>
   <select id="toilet">
     <option value="full">3日分以上</option>
     <option value="partial">1〜2日分</option>
     <option value="none">なし</option>
   </select>
 
-  <p>家族との連絡手段を決めていますか？</p>
+  <p>連絡手段</p>
   <select id="contact">
     <option value="yes">決めている</option>
     <option value="no">決めていない</option>
@@ -103,35 +141,35 @@
 
   <br>
   <button onclick="nextStep(2)">戻る</button>
-  <button onclick="nextStep(4)">結果</button>
+  <button class="next" onclick="nextStep(4)">結果を見る</button>
 </div>
 
 <!-- STEP4 -->
 <div id="step4" class="step">
   <h2>④ 診断結果</h2>
   <div id="result"></div>
-  <button onclick="nextStep(3)">戻る</button>
 </div>
 
 <script>
 let personsData = [];
 
+/* 人物保存 */
 function savePersons() {
   const count = Number(document.getElementById("people").value);
-  const newData = [];
+  personsData = [];
 
   for (let i = 0; i < count; i++) {
-    const g = document.getElementById("gender" + i)?.value ?? "male";
-    const a = document.getElementById("age" + i)?.value ?? "adult";
-    newData.push({ gender: g, age: a });
+    personsData.push({
+      gender: document.getElementById("gender" + i).value,
+      age: document.getElementById("age" + i).value
+    });
   }
-  personsData = newData;
 }
 
+/* 入力UI生成 */
 function createPersons() {
   const count = Number(document.getElementById("people").value);
   const div = document.getElementById("persons");
-
   div.innerHTML = "";
 
   for (let i = 0; i < count; i++) {
@@ -154,24 +192,28 @@ function createPersons() {
   }
 }
 
+/* ページ遷移 */
 function nextStep(step) {
   document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
   document.getElementById("step" + step).classList.add("active");
+
+  window.scrollTo(0,0);
 
   if (step === 2) createPersons();
   if (step === 4) calc();
 }
 
+/* 計算ロジック */
 function calc() {
+  savePersons();
+
   const count = Number(document.getElementById("people").value);
 
   let score = 0;
-  let maxScore = 6;
   let list = [];
-  let totalWaterL = count * 9;
-  let totalFoodDays = count * 3;
 
-  savePersons();
+  let water = count * 9;
+  let food = count * 3;
 
   personsData.forEach(p => {
     if (p.age === "baby") list.push("粉ミルク・おむつ");
@@ -180,36 +222,49 @@ function calc() {
   });
 
   if (document.getElementById("furniture").value === "yes") score++; else list.push("家具固定");
-  if (document.getElementById("foodWater").value === "full") score += 2;
-  else list.push("水・食料");
-  if (document.getElementById("toilet").value === "full") score += 2;
-  else list.push("簡易トイレ");
-  if (document.getElementById("contact").value === "yes") score++;
-  else list.push("連絡方法確認");
+  if (document.getElementById("foodWater").value === "full") score+=2; else list.push("水・食料");
+  if (document.getElementById("toilet").value === "full") score+=2; else list.push("簡易トイレ");
+  if (document.getElementById("contact").value === "yes") score++; else list.push("連絡方法");
 
   list = [...new Set(list)];
 
-  let level = score <= 2 ? "危険" : score <= 4 ? "要改善" : "安心";
+  let level = "";
+  let msg = "";
+  let className = "";
+
+  if (score <= 2) {
+    level = "危険";
+    msg = "今すぐ備蓄を見直してください";
+    className = "level-danger";
+  } else if (score <= 4) {
+    level = "要改善";
+    msg = "あと少しで安心です";
+    className = "level-warning";
+  } else {
+    level = "安心";
+    msg = "しっかり備えています";
+    className = "level-safe";
+  }
 
   document.getElementById("result").innerHTML = `
-    <div class="result-box">
-      <strong>結果：${level}</strong><br><br>
+    <div class="result-box ${className}">
+      <h3>あなたの備蓄レベル：${level}</h3>
+      <p>${msg}</p>
 
-      水：${totalWaterL}L<br>
-      食料：${totalFoodDays}日分<br><br>
+      水：${water}L<br>
+      食料：${food}日分<br><br>
 
-      不足：<br>
+      <strong>不足しているもの</strong><br>
       ${list.join("<br>")}<br><br>
 
       <div class="link-box">
-        <strong>備蓄品の確認はこちら</strong><br>
+        <strong>今すぐ備蓄を確認しましょう</strong><br>
 
-        <!-- PDFリンク -->
         <a class="link-button" href="pdf/stock.pdf" target="_blank">
           備蓄チェックシートを見る
         </a>
 
-        <p>※開けない場合は下記から</p>
+        <p style="font-size:12px;">開けない場合はこちら</p>
         <a href="pdf/stock.pdf" target="_blank">
           PDFを直接開く
         </a>
@@ -221,4 +276,3 @@ function calc() {
 
 </body>
 </html>
-
