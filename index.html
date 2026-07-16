@@ -425,11 +425,11 @@ function calc() {
 
   const neededWater3days = count * 9;
   const neededFood3days = count * 9;
-  const neededToilet3days = count * 21;
+  const neededToilet3days = count * 15;
 
   const recommendedWater7days = count * 21;
   const recommendedFood7days = count * 21;
-  const recommendedToilet7days = count * 49;
+  const recommendedToilet7days = count * 35;
 
   let score = 0;
   const maxScore = 7;
@@ -462,11 +462,11 @@ function calc() {
     score += 2;
   } else if (toilet === "partial") {
     score += 1;
-    shortage.push(`簡易トイレ：あと約${count * 7}回分〜${count * 14}回分を追加すると3日分に近づきます`);
+    shortage.push(`簡易トイレ：あと約${count * 5}回分〜${count * 10}回分を追加すると3日分に近づきます`);
     advice.push("断水時はトイレが使えない場合があります。簡易トイレも水・食料と同じくらい重要です。");
   } else {
     shortage.push(`簡易トイレ：約${neededToilet3days}回分を目安に準備しましょう`);
-    advice.push("簡易トイレは1人1日7回×3日分を目安に備えましょう。");
+    advice.push("簡易トイレは1人1日5回×3日分を目安に備えましょう。");
   }
 
   if (contact === "yes") {
@@ -568,7 +568,7 @@ function calc() {
       ${adviceHtml}
 
       <div class="link-box">
-        <a class="link-button" href="pdf/stock.pdf" target="_blank" rel="noopener noreferrer">備蓄チェックシートを見る</a>
+        <a class="link-button" href="pdf/stock.pdf" target="_blank" rel="noopener noreferrer">サントリー社員専用備蓄品サイトはこちら</a>
       </div>
     </div>
   `;
