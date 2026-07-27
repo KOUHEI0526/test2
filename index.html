@@ -482,15 +482,15 @@ function calc() {
   const hasFemale = personsData.some(function(person) { return person.gender === "female"; });
 
   if (hasBaby) {
-    personalItems.push("乳幼児向け：おむつ、おしりふき、粉ミルクまたは液体ミルク、離乳食、母子手帳の写し");
+    personalItems.push("0~3歳向け：おむつ、おしりふき、粉ミルクまたは液体ミルク、離乳食、母子手帳の写し");
   }
 
   if (hasChild) {
-    personalItems.push("子供向け：食べ慣れたお菓子、着替え、子供用マスク、安心できる小物");
+    personalItems.push("4~18歳向け：食べ慣れたお菓子、着替え、子供用マスク、安心できる小物");
   }
 
   if (hasElder) {
-    personalItems.push("高齢者向け：常備薬、お薬手帳の写し、眼鏡、補聴器用電池、介護用品");
+    personalItems.push("65歳以上向け：常備薬、お薬手帳の写し、眼鏡、補聴器用電池、介護用品");
   }
 
   if (hasFemale) {
