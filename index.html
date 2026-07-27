@@ -372,10 +372,10 @@ function createPersons() {
 
         <label for="age${i}">年代</label><br>
         <select id="age${i}">
-          <option value="baby" ${currentAge === "baby" ? "selected" : ""}>乳幼児</option>
-          <option value="child" ${currentAge === "child" ? "selected" : ""}>子供</option>
-          <option value="adult" ${currentAge === "adult" ? "selected" : ""}>成人</option>
-          <option value="elder" ${currentAge === "elder" ? "selected" : ""}>高齢者</option>
+          <option value="baby" ${currentAge === "baby" ? "selected" : ""}>0~3歳</option>
+          <option value="child" ${currentAge === "child" ? "selected" : ""}>4～18歳</option>
+          <option value="adult" ${currentAge === "adult" ? "selected" : ""}>19~64歳</option>
+          <option value="elder" ${currentAge === "elder" ? "selected" : ""}>65歳以上</option>
         </select>
       </div>
     `);
