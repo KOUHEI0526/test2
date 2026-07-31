@@ -260,7 +260,7 @@
 
   <!-- STEP2 -->
   <div id="step2" class="step">
-    <h2>② 性別・年代</h2>
+    <h2>② 性別・属性</h2>
     <p>家族構成に応じて、追加で必要になりやすい備蓄品を確認します。</p>
 
     <div id="persons"></div>
@@ -370,7 +370,7 @@ function createPersons() {
           <option value="other" ${currentGender === "other" ? "selected" : ""}>回答しない・その他</option>
         </select>
 
-        <label for="age${i}">年代</label><br>
+        <label for="age${i}">属性</label><br>
         <select id="age${i}">
           <option value="baby" ${currentAge === "baby" ? "selected" : ""}>乳幼児</option>
           <option value="child" ${currentAge === "child" ? "selected" : ""}>学生</option>
